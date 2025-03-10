@@ -1,0 +1,40 @@
+# Utilise l'image officielle PHP avec Apache (modifiez la version de PHP selon vos besoins)
+FROM php:8.1-apache
+
+# Installe les dépendances nécessaires pour Symfony et les extensions PHP
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libpq-dev \
+    libzip-dev \
+    zip \
+    git \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install -j$(nproc) intl pdo pdo_mysql pdo_pgsql zip
+
+# Active le mod_rewrite pour Apache (utile pour Symfony)
+RUN a2enmod rewrite
+
+# Définit le document root à public/ pour Symfony
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+
+# Met à jour la configuration de Apache pour utiliser le nouveau document root
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Copie l'application dans le conteneur
+COPY . /var/www/html
+
+# Installe Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Expose le port 80
+EXPOSE 80
+
+# Définit le répertoire de travail
+WORKDIR /var/www/html
+
+# Lance Composer pour installer les dépendances à la construction du conteneur (optionnel)
+# RUN composer install --no-dev --optimize-autoloader
+
+# Permet de personnaliser les commandes au démarrage du conteneur
+CMD ["apache2-foreground"]

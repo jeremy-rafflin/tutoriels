@@ -1,0 +1,15 @@
+version: '3.2'
+services:
+    specification:
+        build: 
+            context: ../
+            dockerfile: ./Infrastructure/dockerfile
+            args:
+                - ENV=dev
+        container_name: specification
+        ports:
+            - 8090:80
+        volumes:
+            - ..:/var/www/html # en prod/recette on utilise pas docker-compsoe donc pas besoin de désactiver les volumes
+        extra_hosts: 
+            - host.docker.internal:host-gateway
