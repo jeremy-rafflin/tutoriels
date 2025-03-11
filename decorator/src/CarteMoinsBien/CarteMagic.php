@@ -1,7 +1,7 @@
 <?php
-namespace App\Carte1;
+namespace App\CarteMoinsBien;
 
-class MauvaiseFaconCarteMagic extends MauvaiseFaconCarte
+class CarteMagic extends Carte
 {
     public function description(): string {
         return 'je suis une carte magic';

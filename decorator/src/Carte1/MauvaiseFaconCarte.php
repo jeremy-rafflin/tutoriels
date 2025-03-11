@@ -1,7 +1,10 @@
 <?php
-namespace Carte1;
+namespace App\Carte1;
 
-abstract class MauvaiseFaconCarte
+use App\CarteOk\CarteInterface;
+
+
+abstract class MauvaiseFaconCarte implements CarteInterface
 {
 
 

@@ -22,3 +22,38 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # problème héritage
+    App\CarteOk\CarteMagic:
+        arguments:
+            - 3.0
+            - 8.7
+
+    App\CarteOk\Decorator\FoilDecorator:
+        decorates: App\CarteOk\CarteMagic
+        decoration_priority: 60
+
+    App\CarteOk\Decorator\SigneDecorator:
+        decorates: App\CarteOk\CarteMagic
+        decoration_priority: 60
+
+    App\CarteOk\Decorator\ProtegeCarteDecorator:
+        decorates: App\CarteOk\CarteMagic
+        decoration_priority: 50
+
+    doubleSleeve:
+        class: App\CarteOk\Decorator\ProtegeCarteDecorator
+        decorates: App\CarteOk\CarteMagic
+        decoration_priority: 50
+
+    # interface, focntionne pour décorer d'autre type de carte, carte Lorcana, YugiHo, ...
+    App\CarteOk\CarteInterface: '@App\CarteOk\CarteMagic'
+
+    # heritage exemple
+    App\CarteMoinsBien\Decorator\SigneDecorator:
+        arguments:
+            - 3.0
+            - 8.7
+
+    App\Controller\CarteSymfonyControllerHeritage:
+        arguments: ['@App\CarteMoinsBien\Decorator\SigneDecorator']
